@@ -47,3 +47,9 @@ Added a comprehensive test for `/api/vehicles/search` filtering to `tests/vehicl
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Added TDD tests for PUT and DELETE vehicle endpoints in `tests/vehicles.test.js`, testing admin role blocks (403). Implemented `role` in the `User` schema and JWT token payload, created an `admin` auth middleware, and implemented the `updateVehicle` and `deleteVehicle` endpoints securely.
+
+## User Prompt - Date: 2026-07-23
+> /goal Write failing tests for POST /api/vehicles/:id/purchase (decrements quantity, blocks if quantity is 0) and POST /api/vehicles/:id/restock (admin-only, increments quantity). Then implement both.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Wrote TDD tests in `tests/vehicles.test.js` to enforce stock constraints during purchases and admin-only restocks. Implemented `purchaseVehicle` and `restockVehicle` in the controller with full logic and wired them in routes. All tests passing green.

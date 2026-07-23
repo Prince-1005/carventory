@@ -171,4 +171,63 @@ describe('Vehicles API', () => {
       expect(res.statusCode).toBe(403);
     });
   });
+
+  describe('POST /api/vehicles/:id/purchase', () => {
+    it('should decrement quantity on successful purchase', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 1
+      });
+      
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicle.insertedId}/purchase`)
+        .set('Authorization', `Bearer ${token}`);
+        
+      expect(res.statusCode).toBe(200);
+      expect(res.body.vehicle.quantity).toBe(0);
+      expect(res.body.message).toBe('Vehicle purchased successfully');
+    });
+
+    it('should block purchase if quantity is 0', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 0
+      });
+      
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicle.insertedId}/purchase`)
+        .set('Authorization', `Bearer ${token}`);
+        
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toBe('Vehicle out of stock');
+    });
+  });
+
+  describe('POST /api/vehicles/:id/restock', () => {
+    it('should increment quantity when admin restocks', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 0
+      });
+      
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicle.insertedId}/restock`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ quantity: 5 });
+        
+      expect(res.statusCode).toBe(200);
+      expect(res.body.vehicle.quantity).toBe(5);
+      expect(res.body.message).toBe('Vehicle restocked successfully');
+    });
+
+    it('should return 403 for non-admins trying to restock', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 0
+      });
+      
+      const res = await request(app)
+        .post(`/api/vehicles/${vehicle.insertedId}/restock`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ quantity: 5 });
+        
+      expect(res.statusCode).toBe(403);
+    });
+  });
 });
