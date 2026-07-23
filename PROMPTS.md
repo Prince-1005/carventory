@@ -11,3 +11,9 @@ Scaffolded the project, including a TDD health check test, Express app, Mongoose
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Wrote the failing test `tests/auth.test.js` for the register endpoint and showed it to the user for confirmation. Also installed bcrypt for password hashing.
+
+## User Prompt - Date: 2026-07-23
+> /goal Following TDD, write a failing test for POST /api/auth/login (valid credentials return a JWT; invalid return 401). Show the test first. Once confirmed, implement the login logic and JWT signing.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Wrote failing tests for the login endpoint (testing both valid and invalid credentials) in `tests/auth.test.js`. Demonstrated they fail, waiting for user confirmation before implementing. Installed jsonwebtoken.
