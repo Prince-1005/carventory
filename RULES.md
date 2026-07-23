@@ -2,7 +2,7 @@
 
 > **Project:** Car Dealership Inventory System (TDD Kata)
 > **Stack:** Node.js (backend) · MongoDB + Mongoose (database) · React + Tailwind (frontend)
-> **Tooling:** Antigravity CLI (multi-model AI development workflow) · Graphify
+> **Tooling:** Antigravity CLI (multi-model AI development workflow)
 > **Purpose of this file:** These are binding rules for any AI model/tool
 > (e.g. Claude, ChatGPT, Copilot, Gemini) assisting on this project. This file
 > will be shared directly with the AI at the start of a session. The AI must
@@ -157,12 +157,12 @@ than fabricating a reflection wholesale.
 
 ---
 
-## 8. Multi-Model Tooling Rules (Antigravity CLI / Graphify)
+## 8. Multi-Model Tooling Rules (Antigravity CLI)
 
 This project uses **Antigravity CLI** to route work across multiple AI
-models, and **Graphify** as part of the workflow. Since more than one model
-may touch the codebase, these rules exist to keep output consistent and the
-disclosure trail intact regardless of which model did the work.
+models. Since more than one model may touch the codebase, these rules 
+exist to keep output consistent and the disclosure trail intact 
+regardless of which model did the work.
 
 - **Attribute the actual model.** If Antigravity CLI routes a task to a
   specific underlying model (e.g. Claude, GPT, Gemini), the co-author
@@ -178,11 +178,6 @@ disclosure trail intact regardless of which model did the work.
   another model wrote, it should extend/refactor consistently with the
   existing patterns rather than silently rewriting in its own style, unless
   the developer explicitly asks for a rewrite.
-- **Graphify outputs still need review.** Any schema, diagram, or scaffold
-  Graphify generates is a starting point, not a final artifact — the
-  developer (with AI help) must still verify it matches the kata's actual
-  data model (Vehicle, User, quantity/purchase/restock logic) before it's
-  treated as done.
 - **Log cross-model handoffs in PROMPTS.md.** If a task moves from one
   model to another via Antigravity CLI, note the handoff in `PROMPTS.md`
   (e.g. "Scaffolded with Model A, tests debugged with Model B") so the
