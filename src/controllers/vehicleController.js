@@ -4,14 +4,7 @@ const createVehicle = async (req, res) => {
   try {
     const { make, model, category, price, quantity } = req.body;
 
-    const newVehicle = new Vehicle({
-      make,
-      model,
-      category,
-      price,
-      quantity
-    });
-
+    const newVehicle = new Vehicle({ make, model, category, price, quantity });
     await newVehicle.save();
 
     res.status(201).json({
@@ -25,8 +18,20 @@ const createVehicle = async (req, res) => {
 
 const getVehicles = async (req, res) => {
   try {
-    const vehicles = await Vehicle.find({});
-    res.status(200).json({ vehicles });
+    // Optional pagination (Issue 11) — defaults keep existing tests green
+    const page  = Math.max(1, parseInt(req.query.page)  || 1);
+    const limit = Math.min(100, parseInt(req.query.limit) || 20);
+    const skip  = (page - 1) * limit;
+
+    const [vehicles, total] = await Promise.all([
+      Vehicle.find({}).skip(skip).limit(limit),
+      Vehicle.countDocuments({}),
+    ]);
+
+    res.status(200).json({
+      vehicles,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -35,12 +40,12 @@ const getVehicles = async (req, res) => {
 const searchVehicles = async (req, res) => {
   try {
     const { make, model, category, minPrice, maxPrice } = req.query;
-    
+
     let query = {};
-    if (make) query.make = new RegExp(make, 'i');
-    if (model) query.model = new RegExp(model, 'i');
+    if (make)     query.make     = new RegExp(make, 'i');
+    if (model)    query.model    = new RegExp(model, 'i');
     if (category) query.category = new RegExp(category, 'i');
-    
+
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = Number(minPrice);
@@ -61,7 +66,14 @@ const updateVehicle = async (req, res) => {
       return res.status(404).json({ message: 'Vehicle not found' });
     }
 
-    Object.assign(vehicle, req.body);
+    // Explicit field whitelist — prevents mass-assignment vulnerability (Issue 4)
+    const { make, model, category, price, quantity } = req.body;
+    if (make     !== undefined) vehicle.make     = make;
+    if (model    !== undefined) vehicle.model    = model;
+    if (category !== undefined) vehicle.category = category;
+    if (price    !== undefined) vehicle.price    = price;
+    if (quantity !== undefined) vehicle.quantity = quantity;
+
     const updatedVehicle = await vehicle.save();
     res.status(200).json({ message: 'Vehicle updated', vehicle: updatedVehicle });
   } catch (error) {

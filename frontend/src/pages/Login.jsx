@@ -7,16 +7,20 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Issue 14
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError('');
+      setLoading(true);
       const res = await client.post('/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,8 +38,12 @@ function Login() {
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mt-1 border rounded-md" />
           </div>
-          <button type="submit" className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
-            Sign In
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
         <p className="text-sm text-center text-gray-600">

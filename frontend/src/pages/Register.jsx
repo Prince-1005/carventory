@@ -8,11 +8,13 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Issue 14
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError('');
+      setLoading(true);
       // Role is intentionally not sent — backend always assigns 'user'.
       // Admin account is seeded separately via `npm run seed`.
       await client.post('/auth/register', { username, email, password });
@@ -20,6 +22,8 @@ function Register() {
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +45,12 @@ function Register() {
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mt-1 border rounded-md" />
           </div>
-          <button type="submit" className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
-            Sign Up
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Creating account…' : 'Sign Up'}
           </button>
         </form>
         <p className="text-sm text-center text-gray-600">
@@ -54,4 +62,3 @@ function Register() {
 }
 
 export default Register;
-

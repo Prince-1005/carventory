@@ -4,7 +4,7 @@ const client = axios.create({
   baseURL: '/api',
 });
 
-// Request interceptor for API calls to add auth token
+// Attach JWT token to every outgoing request (Issue 9)
 client.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -13,7 +13,17 @@ client.interceptors.request.use(
     }
     return config;
   },
+  (error) => Promise.reject(error)
+);
+
+// Globally handle 401 — clear token and redirect to /login (Issue 9)
+client.interceptors.response.use(
+  (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

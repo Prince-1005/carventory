@@ -71,3 +71,31 @@ Wrote the frontend logic for `Dashboard.jsx`. Decoded JWT auth tokens using `jwt
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Updated `Login.jsx` and `Register.jsx` to tie into the respective `/api/auth/login` and `/api/auth/register` endpoints. Stored JWT inside `localStorage` on login and gracefully handled error state rendering on the UI. Additionally, updated the backend `authController` to accept the `role` parameter during registration, allowing UI users to dynamically create `user` or `admin` accounts for easier testing of the role-based views.
+
+---
+*Model switch: Gemini 3.1 Pro (High) → Claude Sonnet 4.6 (Thinking)*
+
+---
+
+## User Prompt - Date: 2026-07-23
+> /goal analyze whole folder and review this project regarding overall structure, database, safety, API endpoints etc.
+
+## AI Response Summary (Claude Sonnet 4.6 (Thinking))
+Performed a comprehensive full-project audit by reading every source file (controllers, models, routes, middleware, tests, frontend pages, config). Produced a detailed review artifact (`project_review.md`) covering:
+- **Structure**: Clean MVC separation, correct route ordering (`/search` before `/:id`), good test isolation using `MongoMemoryServer`.
+- **API Endpoints**: All 10 required kata endpoints confirmed present and correctly secured.
+- **Database**: Noted missing Mongoose indexes on searchable Vehicle fields, no pagination on `GET /api/vehicles`, and a mass-assignment risk in `updateVehicle` via `Object.assign`.
+- **Security**: Identified 3 critical and 4 high-priority issues — admin self-assignment via `req.body.role`, wildcard CORS, no rate limiting on auth routes, no `helmet.js`, JWT stored in localStorage, and `JWT_SECRET` falling back silently to `'testsecret'`.
+- **Tests**: Praised isolated `MongoMemoryServer` setup and `afterEach` cleanup; flagged that raw `insertOne` bypasses Mongoose validators.
+- **Config**: Found `JWT_SECRET` missing from `.env.example`, `frontend/node_modules` not gitignored, and `README.md` essentially empty.
+- **RULES.md Compliance**: Flagged missing "My AI Usage" section in `README.md` as a required kata deliverable.
+- Produced a prioritised action table of 15 issues (3 Critical, 4 High, 4 Medium, 4 Low).
+
+## User Prompt - Date: 2026-07-23
+> /goal solve issue 1 (don't remove admin, create an admin in database who only login as a admin), solve issue 3 (add JWT_SECRET in .env and .env.example file)
+
+## AI Response Summary (Claude Sonnet 4.6 (Thinking))
+Implemented a proper seeder-based admin strategy instead of removing admin from the codebase:
+1. **Issue 1 — Admin via seeder**: Removed `role` from `req.body` in `authController.js` so public registration is always `'user'`. Created `src/config/seed.js` — an idempotent Node.js script that connects to MongoDB, checks if the admin already exists, and if not hashes a password and inserts a user with `role: 'admin'`. Added `"seed": "node src/config/seed.js"` to `package.json` scripts. Ran `npm run seed` against the live Atlas database — admin seeded successfully at `admin@carventory.com` / `Admin@123!`. Removed the role dropdown from `Register.jsx` to align the UI with the backend.
+2. **Issue 3 — JWT_SECRET**: Added `JWT_SECRET=carventory_jwt_super_secret_2026` to the live `.env` file. Created `.env.example` documenting all required variables (`PORT`, `MONGODB_URI`, `JWT_SECRET`) and the optional admin seed overrides (`ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`).
+All 20 TDD tests verified passing after changes. dotenv log confirmed 3 env vars now loaded (`injected env (3)`).
