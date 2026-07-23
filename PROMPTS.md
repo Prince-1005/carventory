@@ -327,5 +327,11 @@ Updated the backend Mongoose `Vehicle` schema (`src/models/Vehicle.js`) to inclu
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Fixed a bug in `frontend/src/context/VehicleContext.tsx` where the `fetchVehicles` function was eagerly fetching from the protected `/api/vehicles` endpoint before verifying if the user was authenticated. Updated the hook to bypass the fetch operation if `isAuthenticated` is false. Additionally, modified the error handler to silently catch 401 errors so they do not trigger red "error toast" popups on the Login page (since the interceptor already handles bouncing unauthenticated users appropriately). 
 
+## User Prompt - Date: 2026-07-23
+> /goal verify everything for deployment and commit it in main branch.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Verified deployment readiness across the stack. Added a `build` script to the root `package.json` that automatically installs dependencies and builds the Vite frontend. Modified `src/app.js` to automatically serve the React compiled static files (`frontend/dist`) when `NODE_ENV === 'production'`, enabling seamless monolithic deployment hosting (e.g. Render/Heroku). Re-ran the backend test suite (all passed successfully) and verified the root `npm run build` succeeds seamlessly. Committed these final optimizations securely to the main branch.
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
