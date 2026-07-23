@@ -65,3 +65,9 @@ Scaffolded a new Vite React application in `frontend/`. Configured Tailwind CSS 
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Wrote the frontend logic for `Dashboard.jsx`. Decoded JWT auth tokens using `jwt-decode` to enforce user vs admin views. Added complete UI for listing vehicles, searching by properties, purchasing (disabled if out of stock), and complete Admin capabilities (Add, Edit, Restock, Delete) linked through the `axios` client. Set up Vite proxy to connect `/api` directly to the Express backend.
+
+## User Prompt - Date: 2026-07-23
+> /goal great work, now Implement the auth pages and wire up the actual Login and Register forms.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Updated `Login.jsx` and `Register.jsx` to tie into the respective `/api/auth/login` and `/api/auth/register` endpoints. Stored JWT inside `localStorage` on login and gracefully handled error state rendering on the UI. Additionally, updated the backend `authController` to accept the `role` parameter during registration, allowing UI users to dynamically create `user` or `admin` accounts for easier testing of the role-based views.
