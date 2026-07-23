@@ -1,0 +1,6 @@
+{
+  "name": "Apex Motors - Dealership Inventory System",
+  "description": "A luxury car dealership inventory management system built with React, Tailwind CSS, and Axios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
