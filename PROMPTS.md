@@ -29,3 +29,9 @@ Created the User Mongoose schema, auth controller, and auth routes. Updated app.
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Created `tests/authMiddleware.test.js` and implemented `src/middleware/auth.js` to extract and verify JWT bearer tokens. Tests confirm 401 on missing/invalid tokens and successful passing of `req.user` on valid tokens.
+
+## User Prompt - Date: 2026-07-23
+> /goal Following TDD, write failing tests for POST /api/vehicles (protected, creates a vehicle with make/model/category/price/quantity) and GET /api/vehicles (protected, lists all vehicles). Then implement the Mongoose Vehicle schema and the two endpoints.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Wrote failing tests in `tests/vehicles.test.js`. Implemented `src/models/Vehicle.js`, `src/controllers/vehicleController.js`, and `src/routes/vehicleRoutes.js`. Updated `app.js` to serve these routes protected by the auth middleware. Verified tests pass.
