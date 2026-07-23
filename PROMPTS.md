@@ -99,3 +99,49 @@ Implemented a proper seeder-based admin strategy instead of removing admin from 
 1. **Issue 1 — Admin via seeder**: Removed `role` from `req.body` in `authController.js` so public registration is always `'user'`. Created `src/config/seed.js` — an idempotent Node.js script that connects to MongoDB, checks if the admin already exists, and if not hashes a password and inserts a user with `role: 'admin'`. Added `"seed": "node src/config/seed.js"` to `package.json` scripts. Ran `npm run seed` against the live Atlas database — admin seeded successfully at `admin@carventory.com` / `Admin@123!`. Removed the role dropdown from `Register.jsx` to align the UI with the backend.
 2. **Issue 3 — JWT_SECRET**: Added `JWT_SECRET=carventory_jwt_super_secret_2026` to the live `.env` file. Created `.env.example` documenting all required variables (`PORT`, `MONGODB_URI`, `JWT_SECRET`) and the optional admin seed overrides (`ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`).
 All 20 TDD tests verified passing after changes. dotenv log confirmed 3 env vars now loaded (`injected env (3)`).
+
+## User Prompt - Date: 2026-07-23
+> /goal add prompts and AI response summary of Claude Sonnet 4.6 (Thinking) in PROMPTS.md file
+
+## AI Response Summary (Claude Sonnet 4.6 (Thinking))
+Read the current `PROMPTS.md` file to find the last recorded entry. Appended a model-switch divider (`Gemini 3.1 Pro (High) → Claude Sonnet 4.6 (Thinking)`) followed by four complete session entries covering: full project review (15-issue audit), critical fixes attempt (admin + README + JWT_SECRET), revert of those changes, and the final seeder-based admin + JWT_SECRET fix. All entries include the exact user prompt and a detailed AI response summary.
+
+## User Prompt - Date: 2026-07-23
+> /goal now, resolve issues after issues no. 3 without any error.
+
+## AI Response Summary (Claude Sonnet 4.6 (Thinking))
+Resolved all 12 remaining issues (#4–#15) from the project review in a single session. Changes were grouped by layer:
+
+**Backend (Issues 4, 5, 6, 8, 10, 11, 12):**
+- **#4** — Fixed mass-assignment in `updateVehicle`: replaced `Object.assign(vehicle, req.body)` with an explicit field whitelist (`make`, `model`, `category`, `price`, `quantity`).
+- **#5** — Restricted CORS: replaced `cors()` with `cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173', credentials: true })`.
+- **#6** — Added `express-rate-limit` (20 requests / 15-minute window) on the `/api/auth` prefix; rate limiter is skipped when `NODE_ENV === 'test'` to keep the test suite from being blocked.
+- **#8** — Added `express-validator` validation chains to `POST /api/auth/register` (username required, valid email, password ≥ 6 chars), `POST /api/auth/login` (valid email, password not empty), `POST /api/vehicles` (all fields required, price ≥ 0, quantity ≥ 0), and `POST /api/vehicles/:id/restock` (quantity integer ≥ 1). A shared `handleValidation` middleware short-circuits with 400 on failures.
+- **#10** — Added a compound Mongoose index `{ make: 1, model: 1, category: 1, price: 1 }` to the `Vehicle` schema to speed up `searchVehicles` queries.
+- **#11** — Added optional `?page=&limit=` pagination to `GET /api/vehicles` (default page 1, limit 20, max 100). Response now includes a `pagination` object. Existing tests pass because they insert ≤ 20 items and default limit covers all of them.
+- **#12** — Added `helmet()` middleware as the first `app.use()` call to set all recommended HTTP security headers.
+
+**Config / DevOps (Issue 7):**
+- **#7** — Added `frontend/node_modules` to `.gitignore` and documented `CORS_ORIGIN` in `.env.example`.
+
+**Frontend (Issues 9, 13, 14, 15):**
+- **#9** — Added an Axios response interceptor to `api/client.js` that catches any `401` response, removes the token from `localStorage`, and redirects to `/login` — ensuring expired tokens are handled globally without per-component catch blocks.
+- **#13** — Replaced all `window.alert`, `window.confirm`, and `window.prompt` calls in `Dashboard.jsx` with three purpose-built React components: `<Toast>` (auto-dismisses in 3.5 s), `<RestockModal>` (inline quantity input), and `<ConfirmModal>` (delete confirmation). UI thread is no longer blocked.
+- **#14** — Added `loading` / `formLoading` boolean state to `Login.jsx`, `Register.jsx`, and the admin Save button in `Dashboard.jsx`. Buttons disable and show a contextual label (`Signing in…`, `Creating account…`, `Saving…`) while the request is in-flight — prevents double-submission.
+- **#15** — Cleaned `App.css` down to a single `@import "tailwindcss";` line, removing all Vite boilerplate (spinning logo animation, `#root` sizing, etc.).
+
+All 20 TDD tests confirmed passing (4 suites) after every batch of changes.
+
+## User Prompt - Date: 2026-07-23
+> /goal Enhance UI  using modern libraries and make excellence Frontend without any error.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Installed `framer-motion` and `lucide-react` to provide modern animations and sleek icons. Completely refactored the frontend UI for `Login.jsx`, `Register.jsx`, and `Dashboard.jsx`.
+- Added a dark, glassmorphism theme using Tailwind's `slate`, `blue`, and `indigo` palettes with beautiful gradient backgrounds.
+- Used `framer-motion` for smooth page transitions, entry animations, modal popping effects, and micro-interactions on hover and tap.
+- Used `lucide-react` to replace plain text or basic icons with modern vector graphics.
+- Modernized the `Dashboard` with a sticky glass navbar, elegant vehicle cards with hover effects, and fully animated custom modals for actions like Restock, Delete, and Add/Edit vehicles.
+- Confirmed the frontend builds successfully (`npm run build`) and all 20 backend unit tests continue passing flawlessly (`npm run test`).
+
+> [!IMPORTANT]
+> **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
