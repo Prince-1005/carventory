@@ -300,5 +300,13 @@ Successfully integrated the Google AI Studio frontend and restored full system f
 - **Proxy Setup:** Updated `vite.config.ts` in the new frontend to include `proxy: { '/api': 'http://localhost:5000' }`, bridging it to the backend.
 - **Verification:** Installed dependencies (`npm install`), successfully built the new frontend (`npm run build`), and confirmed all backend tests still pass (`npm run test`).
 
+## User Prompt - Date: 2026-07-23
+> /goal great work, now remove demo logins and user cannot change their access level to Admin.
+Here frontend must be connect with backend and wire up with all API endpoints without any error.
+Here user can only login if its exist in user table otherwise they have to register first then sign in.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Removed all demo fallback mock data and hardcoded tokens from `frontend/src/services/api.ts` so the frontend strictly relies on the Express backend endpoints (`apiClient`) to retrieve real data and throw actual errors (401s, etc.) when the backend rejects requests. Additionally, removed the "Account Access Level" UI toggle and local state from `frontend/src/pages/Register.tsx` to prevent users from artificially trying to sign up as admins; now all public signups are strictly forced to the `user` role, which honors the backend's architecture. The frontend now perfectly expects users to either exist in the DB (login succeeds) or require a valid registration first.
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
