@@ -339,5 +339,11 @@ Verified deployment readiness across the stack. Added a `build` script to the ro
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Realized that although the frontend integration, deployment configuration, and database seeding had been successfully `git commit`ted locally, they hadn't been synced to the remote repository. Executed `git push origin main` to instantly upload the 7 newly staged local commits. The new frontend, updated backend logic, and schemas are now officially deployed to the remote main repository.
 
+## User Prompt - Date: 2026-07-23
+> /goal [Pasted text #1 +11 lines solve while launching backend in render.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Addressed common Render deployment crash vectors for Node.js apps by updating `package.json` to enforce `"engines": { "node": ">=18.0.0" }`, which prevents Render from using an outdated Node v14 environment that fails to build Vite and modern dependencies. Added a `"postinstall": "npm run build"` hook so Render automatically compiles the React frontend immediately after installing dependencies, without requiring manual Build Command configurations in the Render dashboard. Adjusted `src/server.js` to explicitly bind to `'0.0.0.0'` instead of localhost to prevent Render port-binding timeouts, and added explicit error logging to `src/config/db.js` to warn if `MONGODB_URI` is missing in the Render environment variables. 
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
