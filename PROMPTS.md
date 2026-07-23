@@ -41,3 +41,9 @@ Wrote failing tests in `tests/vehicles.test.js`. Implemented `src/models/Vehicle
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Added a comprehensive test for `/api/vehicles/search` filtering to `tests/vehicles.test.js`. Extended `src/controllers/vehicleController.js` and `vehicleRoutes.js` to support dynamically querying vehicles based on `make`, `model`, `category`, `minPrice`, and `maxPrice`. Tests successfully passed.
+
+## User Prompt - Date: 2026-07-23
+> /goal Write failing tests for PUT /api/vehicles/:id (any authenticated user) and DELETE /api/vehicles/:id (admin-only, 403 for non-admins). Then implement both.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Added TDD tests for PUT and DELETE vehicle endpoints in `tests/vehicles.test.js`, testing admin role blocks (403). Implemented `role` in the `User` schema and JWT token payload, created an `admin` auth middleware, and implemented the `updateVehicle` and `deleteVehicle` endpoints securely.

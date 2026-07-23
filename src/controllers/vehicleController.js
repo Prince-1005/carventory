@@ -54,8 +54,39 @@ const searchVehicles = async (req, res) => {
   }
 };
 
+const updateVehicle = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    Object.assign(vehicle, req.body);
+    const updatedVehicle = await vehicle.save();
+    res.status(200).json({ message: 'Vehicle updated', vehicle: updatedVehicle });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const deleteVehicle = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    await vehicle.deleteOne();
+    res.status(200).json({ message: 'Vehicle removed' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   createVehicle,
   getVehicles,
-  searchVehicles
+  searchVehicles,
+  updateVehicle,
+  deleteVehicle
 };

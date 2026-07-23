@@ -7,6 +7,7 @@ const Vehicle = require('../src/models/Vehicle');
 
 let mongoServer;
 let token;
+let adminToken;
 
 describe('Vehicles API', () => {
   beforeAll(async () => {
@@ -14,7 +15,8 @@ describe('Vehicles API', () => {
     const uri = mongoServer.getUri();
     await mongoose.connect(uri);
     
-    token = jwt.sign({ userId: '12345', email: 'test@example.com' }, process.env.JWT_SECRET || 'testsecret', { expiresIn: '1h' });
+    token = jwt.sign({ userId: '12345', email: 'test@example.com', role: 'user' }, process.env.JWT_SECRET || 'testsecret', { expiresIn: '1h' });
+    adminToken = jwt.sign({ userId: '67890', email: 'admin@example.com', role: 'admin' }, process.env.JWT_SECRET || 'testsecret', { expiresIn: '1h' });
   });
 
   afterAll(async () => {
@@ -119,6 +121,54 @@ describe('Vehicles API', () => {
       expect(res2.statusCode).toBe(200);
       expect(res2.body.vehicles.length).toBe(2);
       expect(res2.body.vehicles.map(v => v.model).sort()).toEqual(['Camry', 'Civic'].sort());
+    });
+  });
+
+  describe('PUT /api/vehicles/:id', () => {
+    it('should update a vehicle as any authenticated user', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5
+      });
+      
+      const res = await request(app)
+        .put(`/api/vehicles/${vehicle.insertedId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ price: 21000 });
+        
+      expect(res.statusCode).toBe(200);
+      expect(res.body.vehicle.price).toBe(21000);
+    });
+
+    it('should return 401 if unauthenticated', async () => {
+      const res = await request(app).put('/api/vehicles/123456789012').send({ price: 21000 });
+      expect(res.statusCode).toBe(401);
+    });
+  });
+
+  describe('DELETE /api/vehicles/:id', () => {
+    it('should delete a vehicle as an admin', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5
+      });
+      
+      const res = await request(app)
+        .delete(`/api/vehicles/${vehicle.insertedId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+        
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe('Vehicle removed');
+    });
+
+    it('should return 403 for non-admins', async () => {
+      const vehicle = await mongoose.connection.collection('vehicles').insertOne({
+        make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5
+      });
+      
+      const res = await request(app)
+        .delete(`/api/vehicles/${vehicle.insertedId}`)
+        .set('Authorization', `Bearer ${token}`);
+        
+      expect(res.statusCode).toBe(403);
     });
   });
 });
