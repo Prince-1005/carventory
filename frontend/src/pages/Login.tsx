@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { Car, Lock, Mail, ArrowRight, ShieldCheck, RefreshCw, KeyRound, Sparkles } from 'lucide-react';
+import { Car, Lock, Mail, ArrowRight, RefreshCw, Sparkles } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { login } = useAuth();
@@ -35,21 +35,7 @@ export const Login: React.FC = () => {
     }
   };
 
-  const handleQuickDemoLogin = async (role: 'admin' | 'user') => {
-    const demoEmail = role === 'admin' ? 'admin@apexmotors.com' : 'executive@apexmotors.com';
-    setEmail(demoEmail);
-    setPassword('demo1234');
-    setSubmitting(true);
-    try {
-      await login(demoEmail, 'demo1234');
-      showToast(`Logged in as Demo ${role === 'admin' ? 'Admin' : 'Customer'}`, 'success');
-      navigate('/');
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Demo login failed');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#f2f2f2] flex items-center justify-center p-4 relative overflow-hidden font-sans">
@@ -139,31 +125,7 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Demo Logins Bar */}
-          <div className="mt-6 pt-5 border-t border-white/5">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-white/40 block text-center mb-3">
-              Fast Track Demo Access
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('admin')}
-                className="py-2 px-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-xs font-semibold rounded-full transition-all flex items-center justify-center gap-1.5"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Demo Admin
-              </button>
 
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('user')}
-                className="py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-xs font-semibold rounded-full transition-all flex items-center justify-center gap-1.5"
-              >
-                <KeyRound className="w-3.5 h-3.5 text-white/40" />
-                Demo Customer
-              </button>
-            </div>
-          </div>
 
           {/* Register Link */}
           <div className="mt-6 text-center text-xs opacity-50">

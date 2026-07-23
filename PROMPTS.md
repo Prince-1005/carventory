@@ -308,5 +308,11 @@ Here user can only login if its exist in user table otherwise they have to regis
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Removed all demo fallback mock data and hardcoded tokens from `frontend/src/services/api.ts` so the frontend strictly relies on the Express backend endpoints (`apiClient`) to retrieve real data and throw actual errors (401s, etc.) when the backend rejects requests. Additionally, removed the "Account Access Level" UI toggle and local state from `frontend/src/pages/Register.tsx` to prevent users from artificially trying to sign up as admins; now all public signups are strictly forced to the `user` role, which honors the backend's architecture. The frontend now perfectly expects users to either exist in the DB (login succeeds) or require a valid registration first.
 
+## User Prompt - Date: 2026-07-23
+> /goal here still user can switch their role to Admin. Remove this feature, user should not change their role to Admin. Additionally remove "Fast Track Demo Access" and fill demo car inventory in vehicles table.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Removed the "Fast Track Demo Access" buttons and its underlying handler function (`handleQuickDemoLogin`) from the `frontend/src/pages/Login.tsx` component, ensuring users must use actual backend credentials to log in. Updated the backend database seeder script (`src/config/seed.js`) to clear existing vehicles and populate the database with a full catalog of 8 rich demo vehicles (Porsche, Tesla, BMW, etc.) to match the original AI Studio frontend experience. Ran `npm run seed` to successfully inject these vehicles into the live MongoDB database. Verified the frontend still builds perfectly.
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
