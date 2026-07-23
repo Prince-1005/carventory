@@ -53,3 +53,9 @@ Added TDD tests for PUT and DELETE vehicle endpoints in `tests/vehicles.test.js`
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Wrote TDD tests in `tests/vehicles.test.js` to enforce stock constraints during purchases and admin-only restocks. Implemented `purchaseVehicle` and `restockVehicle` in the controller with full logic and wired them in routes. All tests passing green.
+
+## User Prompt - Date: 2026-07-23
+> /goal Scaffold a React + Tailwind SPA with routes/pages for login, register, and a vehicle dashboard. Set up an API client for the backend endpoints we've built. No business logic yet — structure only.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Scaffolded a new Vite React application in `frontend/`. Configured Tailwind CSS v4, setup `react-router-dom` with routes for Login, Register, and Dashboard. Created an `axios` API client in `api/client.js` with an interceptor to attach JWT auth tokens to requests. No business logic wired up yet.
