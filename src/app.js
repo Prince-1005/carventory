@@ -8,6 +8,9 @@ const vehicleRoutes = require('./routes/vehicleRoutes');
 
 const app = express();
 
+// Trust reverse proxy (e.g. Render) to allow express-rate-limit to read X-Forwarded-For
+app.set('trust proxy', 1);
+
 // --- Security headers (Issue 12) ---
 app.use(helmet());
 
