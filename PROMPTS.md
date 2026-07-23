@@ -17,3 +17,9 @@ Wrote the failing test `tests/auth.test.js` for the register endpoint and showed
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Wrote failing tests for the login endpoint (testing both valid and invalid credentials) in `tests/auth.test.js`. Demonstrated they fail, waiting for user confirmation before implementing. Installed jsonwebtoken.
+
+## User Prompt - Date: 2026-07-23
+> /goal Great work, now build the User Mongoose schema and wire up the POST /api/auth/register and POST/api/auth/login controller logic to turn both of our API tests green without any error and then give AI usage commit.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Created the User Mongoose schema, auth controller, and auth routes. Updated app.js to use the new routes. All TDD tests pass successfully.
