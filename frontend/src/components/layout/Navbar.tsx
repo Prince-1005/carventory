@@ -20,7 +20,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenAddModal }) => {
-  const { user, isAdmin, logout, toggleRole } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const { filters, setFilters } = useVehicles();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -79,20 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAddModal }) => {
           {/* Right Action Items */}
           <div className="flex items-center gap-3">
             
-            {/* Demo Role Switcher Toggle */}
-            <button
-              onClick={toggleRole}
-              title="Click to toggle between Admin and Customer perspective"
-              className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                isAdmin
-                  ? 'bg-blue-600/10 border-blue-500/30 text-blue-400 hover:bg-blue-600/20'
-                  : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'
-              }`}
-            >
-              <Shield className={`w-3.5 h-3.5 ${isAdmin ? 'text-blue-400' : 'text-zinc-400'}`} />
-              <span>Role: <strong className="uppercase">{user?.role || 'Guest'}</strong></span>
-              <span className="text-[10px] text-zinc-500 underline ml-0.5">(Switch)</span>
-            </button>
+
 
             {/* Add Vehicle Button for Admin */}
             {isAdmin && onOpenAddModal && (
@@ -141,16 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAddModal }) => {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        toggleRole();
-                        setDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-xs text-zinc-300 hover:bg-white/5 flex items-center gap-2"
-                    >
-                      <Shield className="w-4 h-4 text-blue-400" />
-                      Switch Role ({isAdmin ? 'to Customer' : 'to Admin'})
-                    </button>
+
 
                     <div className="border-t border-white/5 my-1" />
 

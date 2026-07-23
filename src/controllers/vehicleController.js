@@ -2,9 +2,9 @@ const Vehicle = require('../models/Vehicle');
 
 const createVehicle = async (req, res) => {
   try {
-    const { make, model, category, price, quantity } = req.body;
+    const { make, model, year, category, price, quantity, imageUrl, description, specs } = req.body;
 
-    const newVehicle = new Vehicle({ make, model, category, price, quantity });
+    const newVehicle = new Vehicle({ make, model, year, category, price, quantity, imageUrl, description, specs });
     await newVehicle.save();
 
     res.status(201).json({
@@ -67,12 +67,16 @@ const updateVehicle = async (req, res) => {
     }
 
     // Explicit field whitelist — prevents mass-assignment vulnerability (Issue 4)
-    const { make, model, category, price, quantity } = req.body;
-    if (make     !== undefined) vehicle.make     = make;
-    if (model    !== undefined) vehicle.model    = model;
-    if (category !== undefined) vehicle.category = category;
-    if (price    !== undefined) vehicle.price    = price;
-    if (quantity !== undefined) vehicle.quantity = quantity;
+    const { make, model, year, category, price, quantity, imageUrl, description, specs } = req.body;
+    if (make        !== undefined) vehicle.make        = make;
+    if (model       !== undefined) vehicle.model       = model;
+    if (year        !== undefined) vehicle.year        = year;
+    if (category    !== undefined) vehicle.category    = category;
+    if (price       !== undefined) vehicle.price       = price;
+    if (quantity    !== undefined) vehicle.quantity    = quantity;
+    if (imageUrl    !== undefined) vehicle.imageUrl    = imageUrl;
+    if (description !== undefined) vehicle.description = description;
+    if (specs       !== undefined) vehicle.specs       = specs;
 
     const updatedVehicle = await vehicle.save();
     res.status(200).json({ message: 'Vehicle updated', vehicle: updatedVehicle });

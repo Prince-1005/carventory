@@ -314,5 +314,12 @@ Removed all demo fallback mock data and hardcoded tokens from `frontend/src/serv
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Removed the "Fast Track Demo Access" buttons and its underlying handler function (`handleQuickDemoLogin`) from the `frontend/src/pages/Login.tsx` component, ensuring users must use actual backend credentials to log in. Updated the backend database seeder script (`src/config/seed.js`) to clear existing vehicles and populate the database with a full catalog of 8 rich demo vehicles (Porsche, Tesla, BMW, etc.) to match the original AI Studio frontend experience. Ran `npm run seed` to successfully inject these vehicles into the live MongoDB database. Verified the frontend still builds perfectly.
 
+## User Prompt - Date: 2026-07-23
+> /goal after login, user have a capability for changing their access, plz remove that feature. Additionally all parameters of car (shown and select in admin frontend) must be store in database also (modify schema of a car).
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Removed the `toggleRole` UI elements from `Navbar.tsx` and stripped its logic from `AuthContext.tsx` to prevent logged-in users from switching their access level. Also removed the artificial local JWT bypass in `AuthContext` that was hardcoding roles based on email prefixes, ensuring roles are derived 100% strictly from the backend JWT. 
+Updated the backend Mongoose `Vehicle` schema (`src/models/Vehicle.js`) to include the rich UI fields: `year`, `imageUrl`, `description`, and `specs` (horsepower, acceleration, transmission, fuelType, topSpeed). Updated `src/controllers/vehicleController.js` to whitelist these new fields during vehicle creation and updates. Verified that all backend tests continue to pass and the frontend successfully builds.
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.
