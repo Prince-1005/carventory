@@ -23,3 +23,9 @@ Wrote failing tests for the login endpoint (testing both valid and invalid crede
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Created the User Mongoose schema, auth controller, and auth routes. Updated app.js to use the new routes. All TDD tests pass successfully.
+
+## User Prompt - Date: 2026-07-23
+> /goal Write a failing test for a JWT-verifying auth middleware that protects a dummy route (missing/invalid token → 401, valid token → next()). Then implement the middleware to pass it.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Created `tests/authMiddleware.test.js` and implemented `src/middleware/auth.js` to extract and verify JWT bearer tokens. Tests confirm 401 on missing/invalid tokens and successful passing of `req.user` on valid tokens.
