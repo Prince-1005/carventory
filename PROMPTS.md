@@ -35,3 +35,9 @@ Created `tests/authMiddleware.test.js` and implemented `src/middleware/auth.js` 
 
 ## AI Response Summary (Gemini 3.1 Pro (High))
 Wrote failing tests in `tests/vehicles.test.js`. Implemented `src/models/Vehicle.js`, `src/controllers/vehicleController.js`, and `src/routes/vehicleRoutes.js`. Updated `app.js` to serve these routes protected by the auth middleware. Verified tests pass.
+
+## User Prompt - Date: 2026-07-23
+> /goal Write a failing test for GET /api/vehicles/search supporting filtering by make, model, category, and price range. Then implement it with a Mongoose query.
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Added a comprehensive test for `/api/vehicles/search` filtering to `tests/vehicles.test.js`. Extended `src/controllers/vehicleController.js` and `vehicleRoutes.js` to support dynamically querying vehicles based on `make`, `model`, `category`, `minPrice`, and `maxPrice`. Tests successfully passed.

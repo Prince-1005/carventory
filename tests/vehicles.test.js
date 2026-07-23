@@ -93,4 +93,32 @@ describe('Vehicles API', () => {
       expect(res.statusCode).toBe(401);
     });
   });
+
+  describe('GET /api/vehicles/search', () => {
+    it('should filter vehicles by make, model, category, and price range', async () => {
+      await mongoose.connection.collection('vehicles').insertMany([
+        { make: 'Toyota', model: 'Corolla', category: 'Sedan', price: 20000, quantity: 5 },
+        { make: 'Toyota', model: 'Camry', category: 'Sedan', price: 26000, quantity: 2 },
+        { make: 'Honda', model: 'Civic', category: 'Sedan', price: 24000, quantity: 3 },
+        { make: 'Ford', model: 'F-150', category: 'Truck', price: 35000, quantity: 1 }
+      ]);
+
+      const res = await request(app)
+        .get('/api/vehicles/search?make=Toyota&maxPrice=25000')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body.vehicles)).toBeTruthy();
+      expect(res.body.vehicles.length).toBe(1);
+      expect(res.body.vehicles[0].model).toBe('Corolla');
+
+      const res2 = await request(app)
+        .get('/api/vehicles/search?category=Sedan&minPrice=22000&maxPrice=27000')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res2.statusCode).toBe(200);
+      expect(res2.body.vehicles.length).toBe(2);
+      expect(res2.body.vehicles.map(v => v.model).sort()).toEqual(['Camry', 'Civic'].sort());
+    });
+  });
 });
