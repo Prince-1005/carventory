@@ -1,7 +1,8 @@
 # Rules.md — AI Model Usage Rules for This Project
 
 > **Project:** Car Dealership Inventory System (TDD Kata)
-> **Stack:** Node.js (backend) · PostgreSQL (database) · React + Tailwind (frontend)
+> **Stack:** Node.js (backend) · MongoDB + Mongoose (database) · React + Tailwind (frontend)
+> **Tooling:** Antigravity CLI (multi-model AI development workflow) · Graphify
 > **Purpose of this file:** These are binding rules for any AI model/tool
 > (e.g. Claude, ChatGPT, Copilot, Gemini) assisting on this project. This file
 > will be shared directly with the AI at the start of a session. The AI must
@@ -32,10 +33,12 @@ with).
   explicitly asked to compare.
   - Preferred framework: Express (or NestJS if the developer opts in) —
     confirm which before scaffolding if ambiguous.
-- **Database:** PostgreSQL only. Do not suggest MongoDB/SQLite/in-memory
-  stores. Use a real query layer (`pg`, Prisma, or Knex/Sequelize) — confirm
-  the ORM/query-builder choice before generating schema code if not yet
-  decided.
+- **Database:** MongoDB only. Do not suggest PostgreSQL/MySQL/SQLite/
+  in-memory stores. **ODM decision: Mongoose** (confirmed) — do not switch
+  to the native `mongodb` driver without the developer explicitly asking.
+  Note for the kata: an in-memory database (e.g. `mongodb-memory-server` as
+  the *only* store) does not satisfy the "must connect to a database"
+  requirement — it's fine for tests, not for the running app.
 - **Auth:** Token-based (JWT). Passwords must be hashed (bcrypt/argon2) —
   never suggest storing plaintext passwords, even in a "for now" or
   "kata shortcut" framing.
@@ -44,6 +47,12 @@ with).
   (register/login, vehicles CRUD, search, purchase, restock, admin-only
   delete/restock). The AI should not invent extra required endpoints or drop
   required ones without flagging the deviation.
+- **Access control decision (confirmed):** Any authenticated user (not just
+  admins) can create (`POST /api/vehicles`) and update
+  (`PUT /api/vehicles/:id`) vehicles. Only `DELETE /api/vehicles/:id` and
+  `POST /api/vehicles/:id/restock` are admin-only, matching the kata brief.
+  Do not require admin role for create/update unless the developer changes
+  this decision explicitly.
 
 ---
 
@@ -100,7 +109,7 @@ The AI should help the developer draft and keep updated a `README.md`
 section titled **"My AI Usage"** covering:
 - which AI tools were used,
 - how they were used (concretely, e.g. "used Claude to scaffold the
-  Sequelize models for Vehicle and User"),
+  Mongoose models for Vehicle and User"),
 - a genuine reflection on how AI affected the workflow.
 
 The AI must not write this reflection as if it were the developer's own
@@ -137,18 +146,7 @@ than fabricating a reflection wholesale.
 
 ---
 
-## 7. Security & Auth Rules
-
-- JWT tokens must be used for protected endpoints; the AI must not suggest
-  storing plaintext passwords, skipping hashing (e.g. bcrypt/argon2), or
-  disabling auth checks "for now" without a clear TODO and warning.
-- Admin-only endpoints (`DELETE /api/vehicles/:id`,
-  `POST /api/vehicles/:id/restock`) must enforce role checks — the AI must
-  not silently drop this constraint when generating route handlers.
-
----
-
-## 8. Interview-Readiness Rule
+## 7. Interview-Readiness Rule
 
 - Since the developer must be able to discuss AI usage in the interview, the
   AI should favor **explaining** generated code (why this approach, what
@@ -156,6 +154,39 @@ than fabricating a reflection wholesale.
 - When generating non-trivial logic (auth flow, search/filter query,
   purchase/restock quantity logic), the AI should proactively summarize the
   approach in plain language so the developer can restate it confidently.
+
+---
+
+## 8. Multi-Model Tooling Rules (Antigravity CLI / Graphify)
+
+This project uses **Antigravity CLI** to route work across multiple AI
+models, and **Graphify** as part of the workflow. Since more than one model
+may touch the codebase, these rules exist to keep output consistent and the
+disclosure trail intact regardless of which model did the work.
+
+- **Attribute the actual model.** If Antigravity CLI routes a task to a
+  specific underlying model (e.g. Claude, GPT, Gemini), the co-author
+  trailer and the `PROMPTS.md` entry must name that specific model — not a
+  generic "Antigravity CLI" label — so the disclosure is accurate.
+- **Consistency across models.** Every model used on this project must
+  follow this same `Rules.md` — stack choices (Node.js, MongoDB/Mongoose,
+  React/Tailwind), TDD-first workflow, and disclosure rules are not
+  per-model preferences. If asked to hand a task to a different model
+  mid-feature, carry forward the current test state and conventions rather
+  than letting the new model re-derive its own style.
+- **No silent model-switch rewrites.** If a different model revisits code
+  another model wrote, it should extend/refactor consistently with the
+  existing patterns rather than silently rewriting in its own style, unless
+  the developer explicitly asks for a rewrite.
+- **Graphify outputs still need review.** Any schema, diagram, or scaffold
+  Graphify generates is a starting point, not a final artifact — the
+  developer (with AI help) must still verify it matches the kata's actual
+  data model (Vehicle, User, quantity/purchase/restock logic) before it's
+  treated as done.
+- **Log cross-model handoffs in PROMPTS.md.** If a task moves from one
+  model to another via Antigravity CLI, note the handoff in `PROMPTS.md`
+  (e.g. "Scaffolded with Model A, tests debugged with Model B") so the
+  chat-history requirement stays traceable across tools.
 
 ---
 
@@ -169,19 +200,6 @@ than fabricating a reflection wholesale.
    - use the co-author trailer,
    - log the prompt in `PROMPTS.md`,
    - update the "My AI Usage" README section if the usage pattern is new.
-
----
-
-### Summary Checklist (quick reference for every session)
-
-- [ ] Stack respected: Node.js backend + PostgreSQL + React/Tailwind frontend.
-- [ ] TDD followed: test first, then implementation, then refactor.
-- [ ] Every AI-assisted commit has a `Co-authored-by:` trailer.
-- [ ] `README.md` "My AI Usage" section stays accurate and specific.
-- [ ] `PROMPTS.md` captures the full, unedited AI chat history.
-- [ ] Clean code / SOLID principles maintained.
-- [ ] Auth and admin-only protections never bypassed.
-- [ ] No plagiarized code, no fabricated results.
 
 ---
 

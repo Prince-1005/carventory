@@ -1,0 +1,36 @@
+{
+  "name": "carventory",
+  "version": "1.0.0",
+  "description": "TDD Kata: Car Dealership Inventory System by Incubyte",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Prince-1005/carventory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Prince-1005/carventory/issues"
+  },
+  "homepage": "https://github.com/Prince-1005/carventory#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.8.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  }
+}
