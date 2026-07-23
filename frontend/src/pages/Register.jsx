@@ -7,14 +7,15 @@ function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError('');
-      await client.post('/auth/register', { username, email, password, role });
+      // Role is intentionally not sent — backend always assigns 'user'.
+      // Admin account is seeded separately via `npm run seed`.
+      await client.post('/auth/register', { username, email, password });
       alert('Registration successful! Please login.');
       navigate('/login');
     } catch (err) {
@@ -40,13 +41,6 @@ function Register() {
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mt-1 border rounded-md" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full px-3 py-2 mt-1 border rounded-md bg-white">
-              <option value="user">User</option>
-              <option value="admin">Admin (For testing)</option>
-            </select>
-          </div>
           <button type="submit" className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
             Sign Up
           </button>
@@ -60,3 +54,4 @@ function Register() {
 }
 
 export default Register;
+

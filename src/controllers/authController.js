@@ -4,7 +4,10 @@ const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;
+    // 'role' is intentionally excluded from req.body.
+    // Public registration always creates a 'user'.
+    // The admin account is seeded directly via `npm run seed`.
+    const { username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -18,7 +21,7 @@ const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: role || 'user'
+      role: 'user'   // Always 'user' — admin is seeded, not self-assigned
     });
 
     await newUser.save();
