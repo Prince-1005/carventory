@@ -321,5 +321,11 @@ Removed the "Fast Track Demo Access" buttons and its underlying handler function
 Removed the `toggleRole` UI elements from `Navbar.tsx` and stripped its logic from `AuthContext.tsx` to prevent logged-in users from switching their access level. Also removed the artificial local JWT bypass in `AuthContext` that was hardcoding roles based on email prefixes, ensuring roles are derived 100% strictly from the backend JWT. 
 Updated the backend Mongoose `Vehicle` schema (`src/models/Vehicle.js`) to include the rich UI fields: `year`, `imageUrl`, `description`, and `specs` (horsepower, acceleration, transmission, fuelType, topSpeed). Updated `src/controllers/vehicleController.js` to whitelist these new fields during vehicle creation and updates. Verified that all backend tests continue to pass and the frontend successfully builds.
 
+## User Prompt - Date: 2026-07-23
+> /goal here login page shows this notification "Failed to load inventory: Request failed with status code 401"
+
+## AI Response Summary (Gemini 3.1 Pro (High))
+Fixed a bug in `frontend/src/context/VehicleContext.tsx` where the `fetchVehicles` function was eagerly fetching from the protected `/api/vehicles` endpoint before verifying if the user was authenticated. Updated the hook to bypass the fetch operation if `isAuthenticated` is false. Additionally, modified the error handler to silently catch 401 errors so they do not trigger red "error toast" popups on the Login page (since the interceptor already handles bouncing unauthenticated users appropriately). 
+
 > [!IMPORTANT]
 > **Standing Rule (active from this session forward):** PROMPTS.md must be updated as the **final step** of every session. No session is complete until the user prompt and AI response summary have been logged here.

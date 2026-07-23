@@ -74,20 +74,29 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activities, setActivities] = useState<ActivityLog[]>(INITIAL_ACTIVITIES);
 
   const { showToast } = useToast();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const fetchVehicles = useCallback(async () => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await vehicleService.getAll();
       setVehicles(Array.isArray(data) ? data : []);
     } catch (err: any) {
-      showToast('Failed to load inventory: ' + (err.message || 'Error'), 'error');
-      setVehicles([]);
+      if (err.response && err.response.status === 401) {
+        // Silently ignore 401s; the api interceptor will redirect to login
+        setVehicles([]);
+      } else {
+        showToast('Failed to load inventory: ' + (err.message || 'Error'), 'error');
+        setVehicles([]);
+      }
     } finally {
       setLoading(false);
     }
-  }, [showToast]);
+  }, [showToast, isAuthenticated]);
 
   useEffect(() => {
     fetchVehicles();
